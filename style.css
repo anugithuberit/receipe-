@@ -1,0 +1,212 @@
+<style>
+  body {
+    font-family: 'Poppins', Arial, sans-serif;
+    background: linear-gradient(180deg, #fffaf5, #f7f9fb);
+    margin: 0;
+    color: #222;
+    transition: background 0.5s;
+  }
+
+  header {
+    padding: 20px;
+    text-align: center;
+    background: linear-gradient(90deg, #ff7b00, #ffae00);
+    color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+
+  h1, h2, h3 { margin: 0; }
+
+  /* LOGIN PAGE */
+  .login-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    text-align: center;
+    background: linear-gradient(180deg, #fff0e0, #fff9f3);
+  }
+  input[type="text"], input[type="password"] {
+    width: 80%;
+    padding: 12px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-bottom: 15px;
+    outline: none;
+    transition: 0.3s;
+  }
+  input:focus {
+    border-color: #ff7b00;
+    box-shadow: 0 0 6px rgba(255, 123, 0, 0.4);
+  }
+  button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #ff7b00, #ffae00);
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #ff8c1a, #ffc04d);
+  }
+
+  .hidden { display: none; }
+
+  /* CATEGORIES */
+  .categories {
+    text-align: center;
+    margin: 15px;
+  }
+  .categories button {
+    padding: 8px 15px;
+    margin: 4px;
+    border: none;
+    border-radius: 15px;
+    background-color: #e9ecef;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+  }
+  .categories button:hover {
+    background-color: #ffd699;
+  }
+  .categories button.active {
+    background: linear-gradient(90deg, #ff7b00, #ffae00);
+    color: white;
+  }
+
+  /* RECIPE LIST */
+  .recipe-list, .recipe-detail, .search-page, .favorites-page, .profile-page {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+  .recipe-card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s;
+  }
+  .recipe-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  .recipe-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    margin-right: 10px;
+    object-fit: cover;
+  }
+  .recipe-info {
+    flex: 1;
+  }
+  .recipe-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+  }
+  .recipe-info p {
+    margin: 0;
+    color: gray;
+    font-size: 14px;
+  }
+
+  .btn-view {
+    background: linear-gradient(90deg, #ff7b00, #ffae00);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  .btn-view:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #ff8c1a, #ffc04d);
+  }
+
+  /* DETAIL VIEW */
+  .recipe-detail img, .search-detail img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    max-height: 400px;
+    object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  .recipe-detail h3, .search-detail h3 {
+    margin-top: 20px;
+    font-size: 22px;
+    color: #333;
+  }
+  .recipe-detail p.info, .search-detail p.info {
+    font-size: 16px;
+    color: gray;
+  }
+  .recipe-detail ul, .recipe-detail ol,
+  .search-detail ul, .search-detail ol {
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+  .btn-back {
+    background: linear-gradient(90deg, #ff7b00, #ffae00);
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 40px;
+    transition: 0.3s;
+  }
+  .btn-back:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, #ff8c1a, #ffc04d);
+  }
+
+  /* FOOTER NAV */
+  footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+    font-size: 24px;
+    user-select: none;
+  }
+  footer div {
+    cursor: pointer;
+    padding: 5px 10px;
+    color: #555;
+    transition: 0.3s;
+  }
+  footer div:hover {
+    color: #ff7b00;
+    transform: scale(1.1);
+  }
+  footer div.active {
+    color: #ff7b00;
+    font-weight: bold;
+  }
+
+  /* PROFILE PAGE */
+  .profile-page h2 {
+    color: #333;
+  }
+  #logoutBtn:hover {
+    background: #ff4c4c;
+  }
+</style>

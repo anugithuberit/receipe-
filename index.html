@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AMP Recipe App</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f7f9fb;
+    margin: 0;
+    color: #222;
+  }
+  header {
+    padding: 20px;
+    text-align: center;
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  h1, h2, h3 {
+    margin: 0;
+  }
+  input[type="text"], input[type="password"] {
+    width: 80%;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .login-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 80vh;
+    text-align: center;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .categories {
+    text-align: center;
+    margin: 15px;
+  }
+  .categories button {
+    padding: 8px 15px;
+    margin: 3px;
+    border: none;
+    border-radius: 15px;
+    background-color: #e9ecef;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .categories button.active {
+    background-color: #007bff;
+    color: white;
+  }
+  .recipe-list, .recipe-detail, .search-page, .favorites-page, .profile-page {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 0 20px;
+  }
+  .recipe-card {
+    background-color: white;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .recipe-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 10px;
+    margin-right: 10px;
+    object-fit: cover;
+  }
+  .recipe-info {
+    flex: 1;
+  }
+  .recipe-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 18px;
+  }
+  .recipe-info p {
+    margin: 0;
+    color: gray;
+    font-size: 14px;
+  }
+  .btn-view {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  /* Detail View */
+  .recipe-detail img, .search-detail img {
+    width: 100%;
+    border-radius: 12px;
+    margin-bottom: 14px;
+    max-height: 400px;
+    object-fit: cover;
+  }
+  .recipe-detail h3, .search-detail h3 {
+    margin-top: 20px;
+    font-size: 22px;
+  }
+  .recipe-detail p.info, .search-detail p.info {
+    font-size: 16px;
+    color: gray;
+  }
+  .recipe-detail ul, .recipe-detail ol,
+  .search-detail ul, .search-detail ol {
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+  .btn-back {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 40px;
+  }
+  /* Footer nav */
+  footer {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background-color: white;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+    font-size: 24px;
+    user-select: none;
+  }
+  footer div {
+    cursor: pointer;
+    padding: 5px 10px;
+    color: #555;
+  }
+  footer div.active {
+    color: #007bff;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AMP Recipe App</h1>
+</header>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage" class="login-page">
+  <h2>Login</h2>
+  <input id="usernameInput" type="text" placeholder="Enter your username" />
+  <button id="loginBtn">Login</button>
+</div>
+
+<!-- Home Page -->
+<div id="homePage" class="recipe-list hidden">
+  <div class="categories" id="categoryButtons">
+    <button class="active" data-cat="All">All</button>
+    <button data-cat="Italian">Italian</button>
+    <button data-cat="Mexican">Mexican</button>
+    <button data-cat="Asian">Asian</button>
+    <button data-cat="Vegan">Vegan</button>
+    <button data-cat="Quick Meals">Quick Meals</button>
+  </div>
+
+  <div id="homeRecipeList">
+    <!-- recipe cards here -->
+  </div>
+
+  <div id="homeRecipeDetail" class="recipe-detail hidden">
+    <button class="btn-back" id="homeBackBtn">← Back to Recipes</button>
+    <h2 id="homeDetailTitle"></h2>
+    <img id="homeDetailImg" src="" alt="Recipe Image" />
+    <p class="info" id="homeDetailInfo"></p>
+
+    <h3>Ingredients</h3>
+    <ul id="homeDetailIngredients"></ul>
+
+    <h3>Steps</h3>
+    <ol id="homeDetailSteps"></ol>
+  </div>
+</div>
+
+<!-- Search Page -->
+<div id="searchPage" class="search-page hidden" style="text-align:center; padding:20px;">
+  <input id="searchInput" type="text" placeholder="Search recipes by name..." />
+  <div id="searchResult" style="margin-top:20px;">
+    <p>Search for recipes by name above.</p>
+  </div>
+</div>
+
+<!-- Favorites Page -->
+<div id="favoritesPage" class="favorites-page hidden" style="text-align:center; padding:40px; color:#666;">
+  <h2>Your Favorites</h2>
+  <p>No favorite recipes added yet.</p>
+</div>
+
+<!-- Profile Page -->
+<div id="profilePage" class="profile-page hidden" style="text-align:center; padding:40px; color:#666;">
+  <h2>User Profile</h2>
+  <p id="profileText">This is your profile page.</p>
+  <div style="margin-top:20px;">
+    <button id="logoutBtn" style="border-radius:10px;padding:8px 14px;background:#e74c3c;border:none;color:white;cursor:pointer">Logout</button>
+  </div>
+</div>
+
+<footer class="hidden">
+  <div id="navHome" class="active" title="Home">🏠</div>
+  <div id="navSearch" title="Search">🔍</div>
+  <div id="navFavorites" title="Favorites">❤️</div>
+  <div id="navProfile" title="Profile">👤</div>
+</footer>
+
+<script>
+  const recipes = [
+    {
+      id:1,
+      name:'Classic Spaghetti Carbonara',
+      cat:'Italian',
+      time:'30 min',
+      level:'Medium',
+      img:'https://www.themealdb.com/images/media/meals/llcbn01574260722.jpg',
+      ingredients:['Spaghetti','Eggs','Cheese','Pancetta','Black pepper'],
+      steps:['Boil pasta','Cook pancetta','Mix eggs and cheese','Combine and serve'],
+      nutrition: { calories: '400 kcal', protein: '20 g', carbs: '50 g', fat: '15 g' }
+    },
+    {
+      id:2,
+      name:'Chicken Tikka Masala',
+      cat:'Asian',
+      time:'45 min',
+      level:'Medium',
+      img:'https://www.themealdb.com/images/media/meals/uwxusv1487344500.jpg',
+      ingredients:['Chicken','Yogurt','Spices','Tomato puree','Cream'],
+      steps:['Marinate chicken','Grill chicken','Make masala sauce','Combine and simmer'],
+      nutrition: { calories: '500 kcal', protein: '30 g', carbs: '25 g', fat: '20 g' }
+    },
+    {
+      id:3,
+      name:'Beef Tacos',
+      cat:'Mexican',
+      time:'25 min',
+      level:'Easy',
+      img:'https://www.themealdb.com/images/media/meals/qtuwxu1468233098.jpg',
+      ingredients:['Tortillas','Beef','Seasoning','Lettuce','Cheese'],
+      steps:['Cook beef','Warm tortillas','Fill with toppings','Serve with salsa'],
+      nutrition: { calories: '450 kcal', protein: '25 g', carbs: '40 g', fat: '18 g' }
+    },
+    {
+      id:4,
+      name:'Greek Salad Bowl',
+      cat:'Vegan',
+      time:'15 min',
+      level:'Easy',
+      img:'https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg',
+      ingredients:['Tomatoes','Cucumbers','Olives','Feta Cheese','Onions'],
+      steps:['Chop vegetables','Mix ingredients','Add dressing','Serve chilled'],
+      nutrition: { calories: '220 kcal', protein: '6 g', carbs: '15 g', fat: '12 g' }
+    }
+  ];
+
+  // DOM refs
+  const pages = {
+    login: document.getElementById('loginPage'),
+    home: document.getElementById('homePage'),
+    search: document.getElementById('searchPage'),
+    favorites: document.getElementById('favoritesPage'),
+    profile: document.getElementById('profilePage')
+  };
+  const footer = document.querySelector('footer');
+  const navButtons = {
+    home: document.getElementById('navHome'),
+    search: document.getElementById('navSearch'),
+    favorites: document.getElementById('navFavorites'),
+    profile: document.getElementById('navProfile')
+  };
+
+  const categoryButtons = document.getElementById('categoryButtons').querySelectorAll('button');
+  const homeRecipeList = document.getElementById('homeRecipeList');
+  const homeRecipeDetail = document.getElementById('homeRecipeDetail');
+  const homeBackBtn = document.getElementById('homeBackBtn');
+  const homeDetailTitle = document.getElementById('homeDetailTitle');
+  const homeDetailImg = document.getElementById('homeDetailImg');
+  const homeDetailInfo = document.getElementById('homeDetailInfo');
+  const homeDetailIngredients = document.getElementById('homeDetailIngredients');
+  const homeDetailSteps = document.getElementById('homeDetailSteps');
+  const searchInput = document.getElementById('searchInput');
+  const searchResult = document.getElementById('searchResult');
+  const profileText = document.getElementById('profileText');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  let currentCategory = 'All';
+
+  // Render home list
+  function renderHomeList() {
+    let filter = currentCategory;
+    let filtered = recipes.filter(r => filter === 'All' || r.cat === filter);
+
+    if(filtered.length === 0) {
+      homeRecipeList.innerHTML = '<p style="text-align:center; color:#666;">No recipes found.</p>';
+      return;
+    }
+
+    homeRecipeList.innerHTML = '';
+    filtered.forEach(r => {
+      const card = document.createElement('div');
+      card.className = 'recipe-card';
+      card.innerHTML = `
+        <img src="${r.img}" alt="${r.name}">
+        <div class="recipe-info">
+          <h4>${r.name}</h4>
+          <p>⏱ ${r.time} &nbsp; • &nbsp; ${r.level}</p>
+        </div>
+        <button class="btn-view" data-id="${r.id}">View</button>
+      `;
+      homeRecipeList.appendChild(card);
+    });
+
+    // Add click events for view buttons
+    document.querySelectorAll('#homeRecipeList .btn-view').forEach(btn => {
+      btn.onclick = e => {
+        const id = Number(e.target.getAttribute('data-id'));
+        showHomeRecipeDetail(id);
+      };
+    });
+  }
+
+  // Show recipe detail
+  function showHomeRecipeDetail(id) {
+    const recipe = recipes.find(r => r.id === id);
+    if(!recipe) return;
+
+    homeDetailTitle.textContent = recipe.name;
+    homeDetailImg.src = recipe.img;
+    homeDetailImg.alt = recipe.name;
+    homeDetailInfo.textContent = `⏱ ${recipe.time} • ${recipe.level}`;
+    homeDetailIngredients.innerHTML = recipe.ingredients.map(i => `<li>${i}</li>`).join('');
+    homeDetailSteps.innerHTML = recipe.steps.map(s => `<li>${s}</li>`).join('');
+
+    homeRecipeList.classList.add('hidden');
+    categoryButtons.forEach(b => b.disabled = true);
+    homeRecipeDetail.classList.remove('hidden');
+  }
+
+  homeBackBtn.onclick = () => {
+    showHomeRecipeList();
+  };
+
+  function showHomeRecipeList() {
+    homeRecipeDetail.classList.add('hidden');
+    homeRecipeList.classList.remove('hidden');
+    categoryButtons.forEach(b => b.disabled = false);
+  }
+
+  // Category click
+  categoryButtons.forEach(btn => {
+    btn.onclick = () => {
+      categoryButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentCategory = btn.getAttribute('data-cat');
+      renderHomeList();
+    };
+  });
+
+  // SEARCH
+  function renderSearchResult(recipe) {
+    if(!recipe) {
+      searchResult.innerHTML = '<p style="color:#666;">No recipe found. Try different name.</p>';
+      return;
+    }
+    searchResult.innerHTML = `
+      <div class="search-detail" style="max-width:600px; margin:0 auto; text-align:left;">
+        <h3>${recipe.name}</h3>
+        <img src="${recipe.img}" alt="${recipe.name}" />
+        <p class="info">⏱ ${recipe.time} • ${recipe.level}</p>
+        <h4>Ingredients</h4>
+        <ul>${recipe.ingredients.map(i => `<li>${i}</li>`).join('')}</ul>
+        <h4>Steps</h4>
+        <ol>${recipe.steps.map(s => `<li>${s}</li>`).join('')}</ol>
+        <h4>Nutrition</h4>
+        <ul>
+          <li>Calories: ${recipe.nutrition.calories}</li>
+          <li>Protein: ${recipe.nutrition.protein}</li>
+          <li>Carbs: ${recipe.nutrition.carbs}</li>
+          <li>Fat: ${recipe.nutrition.fat}</li>
+        </ul>
+      </div>
+    `;
+  }
+
+  searchInput && searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim().toLowerCase();
+    if(!query) {
+      searchResult.innerHTML = '<p>Search for recipes by name above.</p>';
+      return;
+    }
+    const match = recipes.find(r => r.name.toLowerCase().includes(query));
+    renderSearchResult(match);
+  });
+
+  // NAVIGATION
+  function showPage(pageName) {
+    // Hide all pages
+    Object.values(pages).forEach(p => p.classList.add('hidden'));
+    // Remove active class from all nav
+    Object.values(navButtons).forEach(b => b.classList.remove('active'));
+    // Show selected page and mark nav active
+    pages[pageName].classList.remove('hidden');
+    navButtons[pageName].classList.add('active');
+
+    // if home -> ensure list shown and rendered
+    if(pageName === 'home') {
+      renderHomeList();
+      showHomeRecipeList();
+    }
+    // if search -> reset search input
+    if(pageName === 'search') {
+      if (searchInput) searchInput.value = '';
+      if (searchResult) searchResult.innerHTML = '<p>Search for recipes by name above.</p>';
+    }
+  }
+
+  // footer nav click handlers
+  navButtons.home.onclick = () => showPage('home');
+  navButtons.search.onclick = () => showPage('search');
+  navButtons.favorites.onclick = () => showPage('favorites');
+  navButtons.profile.onclick = () => showPage('profile');
+
+  // LOGIN / LOGOUT
+  const loginBtn = document.getElementById('loginBtn');
+  const usernameInput = document.getElementById('usernameInput');
+
+  loginBtn.onclick = () => {
+    const username = usernameInput.value.trim();
+    if (!username) {
+      alert('Please enter a username.');
+      return;
+    }
+    localStorage.setItem('rp_username', username);
+    profileText.innerHTML = `<strong>Welcome, ${username}!</strong><br>This is your profile page.`;
+    // show app pages
+    pages.login.classList.add('hidden');
+    pages.home.classList.remove('hidden');
+    footer.classList.remove('hidden');
+    // render recipes now
+    renderHomeList();
+  };
+
+  logoutBtn.onclick = () => {
+    localStorage.removeItem('rp_username');
+    // hide app show login
+    pages.login.classList.remove('hidden');
+    pages.home.classList.add('hidden');
+    pages.search.classList.add('hidden');
+    pages.favorites.classList.add('hidden');
+    pages.profile.classList.add('hidden');
+    footer.classList.add('hidden');
+    usernameInput.value = '';
+  };
+
+  // On load: check stored username
+  window.addEventListener('DOMContentLoaded', () => {
+    const stored = localStorage.getItem('rp_username');
+    if (stored) {
+      profileText.innerHTML = `<strong>Welcome, ${stored}!</strong><br>This is your profile page.`;
+      pages.login.classList.add('hidden');
+      pages.home.classList.remove('hidden');
+      footer.classList.remove('hidden');
+      renderHomeList();
+    } else {
+      // ensure login shown, app hidden
+      pages.login.classList.remove('hidden');
+      pages.home.classList.add('hidden');
+      footer.classList.add('hidden');
+    }
+  });
+</script>
+
+</body>
+</html>
